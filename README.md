@@ -34,9 +34,9 @@
 
 **方法A: GitHub Pages（推奨）**
 
-👉 [https://YOUR_USERNAME.github.io/ai-trialogue/](https://taka-taka-z.github.io/ai-trialogue/)
+👉 [https://taka-taka-z.github.io/ai-trialogue/](https://taka-taka-z.github.io/ai-trialogue/)
 
-> ※ `YOUR_USERNAME` をご自身のGitHubユーザー名に置き換えてください
+
 
 **方法B: ローカル実行**
 
