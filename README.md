@@ -5,7 +5,7 @@
 3つのAI（Claude / ChatGPT / Gemini）がリアルタイムで議論する、ブラウザ完結型の対話ツールです。テーマを入力するだけで、異なるAIが独自の視点から意見を交わし、最終的に議論の総括レポートを生成します。
 
 <p align="center">
-  <img src="docs/social-preview.png" alt="AI TRIALOGUE" width="720">
+  <img src="social-preview.png" alt="AI TRIALOGUE" width="720">
 </p>
 
 ## 特徴
