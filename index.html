@@ -1,0 +1,1735 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>AI TRIALOGUE</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════
+   AI TRIALOGUE v10 — Design System
+   ═══════════════════════════════════════════ */
+:root {
+  --sans: 'DM Sans', 'Meiryo', 'Hiragino Sans', sans-serif;
+  --mono: 'JetBrains Mono', 'Consolas', monospace;
+
+  /* Base surfaces — warm dark palette */
+  --bg-deep:    #0d0e12;
+  --bg:         #12131a;
+  --surface:    #1a1b24;
+  --surface-2:  #21222e;
+  --surface-3:  #282a38;
+  --border:     #2e3044;
+  --border-2:   #3a3d54;
+
+  /* Text hierarchy */
+  --text:       #e0dfe6;
+  --text-2:     #a8a6b8;
+  --text-3:     #6e6d82;
+
+  /* AI Identity colors — carefully tuned for dark bg contrast */
+  --claude:     #d4a06a;
+  --claude-dim: #d4a06a50;
+  --claude-bg:  #d4a06a12;
+  --gpt:        #5ec4a0;
+  --gpt-dim:    #5ec4a050;
+  --gpt-bg:     #5ec4a012;
+  --gem:        #7ea8e4;
+  --gem-dim:    #7ea8e450;
+  --gem-bg:     #7ea8e412;
+  --host:       #c98a6a;
+  --host-dim:   #c98a6a50;
+  --summary:    #a0a0bc;
+  --summary-dim:#a0a0bc50;
+
+  /* Semantic */
+  --error:      #e05252;
+  --error-bg:   #e0525215;
+  --success:    #4caf70;
+
+  /* Spacing scale */
+  --sp-1: 4px; --sp-2: 8px; --sp-3: 12px; --sp-4: 16px;
+  --sp-5: 20px; --sp-6: 24px; --sp-8: 32px; --sp-10: 40px;
+
+  --radius: 6px;
+  --radius-lg: 10px;
+  --radius-full: 9999px;
+  --transition: 0.15s ease;
+  --max-w: 760px;
+}
+
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  background: var(--bg-deep);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 14px;
+  line-height: 1.6;
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--border-2); }
+
+/* Focus visible */
+:focus-visible { outline: 2px solid var(--claude); outline-offset: 2px; }
+
+/* ═══════════════════════════════════════════
+   HEADER
+   ═══════════════════════════════════════════ */
+header {
+  position: relative;
+  z-index: 20;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.header-main {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: var(--sp-4) var(--sp-6);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+}
+.brand-mark {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.brand-dots {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+.brand-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full);
+  opacity: 0.2;
+  transition: opacity 0.4s, box-shadow 0.4s;
+}
+.brand-dot.active {
+  opacity: 1;
+  box-shadow: 0 0 8px currentColor;
+}
+.brand-title {
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  color: var(--text);
+}
+.brand-sub {
+  font-size: 11px;
+  color: var(--text-3);
+  letter-spacing: 0.1em;
+  font-weight: 400;
+}
+.btn-config {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-2);
+  padding: 6px 14px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font: 500 12px var(--sans);
+  letter-spacing: 0.05em;
+  transition: all var(--transition);
+}
+.btn-config:hover { border-color: var(--border-2); color: var(--text); }
+.btn-config.open { border-color: var(--claude-dim); color: var(--claude); }
+.btn-config svg { width: 14px; height: 14px; }
+
+/* ── Keys Panel ── */
+.keys-panel {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 0 var(--sp-6) var(--sp-4);
+  animation: slideDown 0.25s ease-out;
+}
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.key-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--sp-3) var(--sp-4);
+  margin-bottom: var(--sp-2);
+  transition: border-color 0.3s;
+}
+.key-row.connected { border-color: var(--border-2); }
+.key-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font: 500 12px var(--sans);
+  flex-shrink: 0;
+  border: 1.5px solid;
+  background: transparent;
+}
+.key-avatar.c { color: var(--claude); border-color: var(--claude-dim); }
+.key-avatar.g { color: var(--gpt); border-color: var(--gpt-dim); }
+.key-avatar.m { color: var(--gem); border-color: var(--gem-dim); }
+.key-label {
+  font-size: 11px;
+  color: var(--text-3);
+  letter-spacing: 0.08em;
+  font-weight: 500;
+  margin-bottom: 2px;
+}
+.key-input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: var(--text);
+  font: 400 13px var(--mono);
+  outline: none;
+  padding: 2px 0;
+}
+.key-input::placeholder { color: var(--text-3); }
+.key-status {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full);
+  flex-shrink: 0;
+  transition: all 0.3s;
+}
+.key-status.connected {
+  box-shadow: 0 0 6px currentColor;
+}
+.host-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--sp-3) var(--sp-4);
+  margin-bottom: var(--sp-2);
+  margin-top: var(--sp-3);
+}
+.host-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font: 500 12px var(--sans);
+  flex-shrink: 0;
+  border: 1.5px solid var(--host-dim);
+  color: var(--host);
+  background: transparent;
+}
+.host-input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: var(--text);
+  font: 400 13px var(--sans);
+  outline: none;
+  padding: 2px 0;
+}
+.host-input::placeholder { color: var(--text-3); }
+.keys-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--sp-2) 0 0;
+}
+.keys-note {
+  font-size: 11px;
+  color: var(--text-3);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+}
+.keys-note svg { width: 12px; height: 12px; }
+.btn-test {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  color: var(--text-2);
+  padding: 5px 12px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font: 500 11px var(--sans);
+  letter-spacing: 0.05em;
+  transition: all var(--transition);
+}
+.btn-test:hover { border-color: var(--border-2); color: var(--text); }
+#test-results {
+  margin-top: var(--sp-2);
+  font: 400 12px var(--mono);
+  line-height: 1.8;
+}
+
+/* ═══════════════════════════════════════════
+   CONVERSATION AREA
+   ═══════════════════════════════════════════ */
+.conv {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 var(--sp-6);
+  position: relative;
+  z-index: 1;
+}
+.conv-inner {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding-bottom: var(--sp-6);
+}
+
+/* ── Empty State ── */
+.empty-state {
+  text-align: center;
+  padding: 60px var(--sp-6) 40px;
+  animation: fadeIn 0.5s ease-out;
+}
+.empty-avatars {
+  display: flex;
+  justify-content: center;
+  gap: var(--sp-10);
+  margin-bottom: var(--sp-8);
+}
+.empty-av {
+  text-align: center;
+  transition: opacity 0.4s;
+}
+.empty-av.dim { opacity: 0.2; }
+.empty-av-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto var(--sp-3);
+  border: 1.5px solid;
+  background: transparent;
+  position: relative;
+}
+.empty-av-icon::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: var(--radius-full);
+  border: 1px solid transparent;
+  transition: border-color 0.4s;
+}
+.empty-av:not(.dim) .empty-av-icon::after {
+  border-color: currentColor;
+  opacity: 0.15;
+}
+.empty-av-icon.c { color: var(--claude); border-color: var(--claude-dim); }
+.empty-av-icon.g { color: var(--gpt); border-color: var(--gpt-dim); }
+.empty-av-icon.m { color: var(--gem); border-color: var(--gem-dim); }
+.empty-av-icon svg { width: 22px; height: 22px; }
+.empty-av-name {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+.empty-av-name.c { color: var(--claude); }
+.empty-av-name.g { color: var(--gpt); }
+.empty-av-name.m { color: var(--gem); }
+.empty-av-vendor {
+  font-size: 10px;
+  color: var(--text-3);
+  margin-top: 2px;
+  letter-spacing: 0.1em;
+  font-weight: 500;
+}
+.empty-connector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: var(--sp-6) auto;
+  gap: var(--sp-3);
+  color: var(--text-3);
+}
+.empty-connector-line {
+  width: 40px;
+  height: 1px;
+  background: var(--border);
+}
+.empty-connector-icon { font-size: 12px; }
+.empty-msg {
+  font-size: 14px;
+  color: var(--text-3);
+  font-weight: 400;
+  letter-spacing: 0.05em;
+}
+
+/* ── Round Divider ── */
+.round-div {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  margin: var(--sp-8) 0 var(--sp-6);
+  animation: fadeIn 0.3s ease-out;
+}
+.round-div-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border), transparent);
+}
+.round-div-badge {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-1) var(--sp-4);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+}
+.round-div-label {
+  font: 500 11px var(--sans);
+  color: var(--text-2);
+  letter-spacing: 0.15em;
+}
+.round-div-dots {
+  display: flex;
+  gap: 3px;
+}
+.round-div-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: var(--radius-full);
+  opacity: 0.6;
+}
+
+/* ── Message Bubble ── */
+.msg {
+  display: flex;
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-5);
+  max-width: 92%;
+  animation: msgIn 0.35s ease-out;
+}
+@keyframes msgIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.msg.pos-left { margin-right: auto; }
+.msg.pos-right { margin-left: auto; flex-direction: row-reverse; }
+.msg.pos-center { margin-left: 3%; margin-right: auto; }
+
+.msg-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 1.5px solid;
+  background: transparent;
+  font: 500 13px var(--sans);
+  margin-top: 2px;
+}
+.msg-avatar.c { color: var(--claude); border-color: var(--claude-dim); }
+.msg-avatar.g { color: var(--gpt); border-color: var(--gpt-dim); }
+.msg-avatar.m { color: var(--gem); border-color: var(--gem-dim); }
+.msg-avatar.s { color: var(--summary); border-color: var(--summary-dim); }
+.msg-avatar.h { color: var(--host); border-color: var(--host-dim); }
+
+.msg-content { flex: 1; min-width: 0; }
+.msg-header {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-1);
+}
+.msg.pos-right .msg-header { flex-direction: row-reverse; }
+.msg-name {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+.msg-name.c { color: var(--claude); }
+.msg-name.g { color: var(--gpt); }
+.msg-name.m { color: var(--gem); }
+.msg-name.s { color: var(--summary); }
+.msg-name.h { color: var(--host); }
+.msg-vendor {
+  font-size: 10px;
+  color: var(--text-3);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+}
+
+.msg-body {
+  background: var(--surface);
+  padding: var(--sp-4) var(--sp-5);
+  font-size: 14px;
+  line-height: 1.9;
+  color: var(--text);
+  white-space: pre-wrap;
+  word-break: break-word;
+  position: relative;
+  border-radius: var(--radius) var(--radius-lg) var(--radius-lg) var(--radius-lg);
+  border-left: 3px solid transparent;
+}
+.msg.pos-right .msg-body {
+  border-radius: var(--radius-lg) var(--radius) var(--radius-lg) var(--radius-lg);
+  border-left: none;
+  border-right: 3px solid transparent;
+}
+.msg.pos-center .msg-body {
+  border-radius: var(--radius-lg) var(--radius-lg) var(--radius-lg) var(--radius);
+}
+.msg-body.c { border-left-color: var(--claude); background: var(--claude-bg); }
+.msg-body.g { border-left-color: var(--gpt); background: var(--gpt-bg); }
+.msg-body.m { border-left-color: var(--gem); background: var(--gem-bg); }
+.msg-body.s { border-left-color: var(--summary); background: var(--surface-2); }
+.msg-body.h { border-left-color: var(--host); }
+.msg.pos-right .msg-body.c { border-left-color: transparent; border-right-color: var(--claude); }
+.msg.pos-right .msg-body.g { border-left-color: transparent; border-right-color: var(--gpt); }
+.msg.pos-right .msg-body.m { border-left-color: transparent; border-right-color: var(--gem); }
+.msg.pos-right .msg-body.h { border-left-color: transparent; border-right-color: var(--host); }
+
+/* ── Error ── */
+.err-msg {
+  background: var(--error-bg);
+  border-left: 3px solid var(--error);
+  border-radius: var(--radius);
+  padding: var(--sp-3) var(--sp-4);
+  margin: var(--sp-2) 0 var(--sp-5);
+  font: 400 12px var(--mono);
+  color: var(--error);
+  line-height: 1.7;
+  word-break: break-word;
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* ── Thinking Indicator ── */
+.thinking {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3) 0;
+  animation: fadeIn 0.3s ease-out;
+}
+.think-bubble {
+  display: flex;
+  gap: 5px;
+  padding: var(--sp-2) var(--sp-4);
+  border-radius: var(--radius-full);
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+.think-bubble.c { border-color: var(--claude-dim); }
+.think-bubble.g { border-color: var(--gpt-dim); }
+.think-bubble.m { border-color: var(--gem-dim); }
+.think-bubble.s { border-color: var(--summary-dim); }
+.think-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: var(--radius-full);
+  animation: pulse 1.4s ease-in-out infinite;
+}
+.think-dot.c { background: var(--claude); }
+.think-dot.g { background: var(--gpt); }
+.think-dot.m { background: var(--gem); }
+.think-dot.s { background: var(--summary); }
+.think-dot:nth-child(2) { animation-delay: 0.2s; }
+.think-dot:nth-child(3) { animation-delay: 0.4s; }
+@keyframes pulse {
+  0%, 100% { opacity: 0.15; transform: scale(0.8); }
+  50% { opacity: 0.9; transform: scale(1.15); }
+}
+.think-label {
+  font-size: 12px;
+  font-weight: 400;
+  opacity: 0.5;
+  letter-spacing: 0.04em;
+}
+.think-label.c { color: var(--claude); }
+.think-label.g { color: var(--gpt); }
+.think-label.m { color: var(--gem); }
+.think-label.s { color: var(--summary); }
+
+/* ── Synthesis Divider ── */
+.synth-div {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  margin: var(--sp-10) 0 var(--sp-6);
+}
+.synth-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-2), transparent);
+}
+.synth-badge {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-1) var(--sp-4);
+  background: var(--surface-2);
+  border: 1px solid var(--border-2);
+  border-radius: var(--radius-full);
+  font: 500 11px var(--sans);
+  color: var(--summary);
+  letter-spacing: 0.15em;
+}
+.synth-badge svg { width: 14px; height: 14px; }
+
+/* ── Feedback Prompt ── */
+.fb-prompt {
+  max-width: var(--max-w);
+  margin: var(--sp-6) auto;
+  padding: var(--sp-5);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  animation: slideDown 0.3s ease-out;
+}
+.fb-header {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-3);
+}
+.fb-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-full);
+  border: 1.5px solid var(--host-dim);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--host);
+  font: 500 12px var(--sans);
+}
+.fb-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--host);
+  letter-spacing: 0.04em;
+}
+.fb-body {
+  display: flex;
+  gap: var(--sp-3);
+  align-items: flex-end;
+}
+.fb-input {
+  flex: 1;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--sp-3) var(--sp-4);
+  color: var(--text);
+  font: 400 13px var(--sans);
+  resize: none;
+  outline: none;
+  line-height: 1.7;
+  transition: border-color var(--transition);
+}
+.fb-input:focus { border-color: var(--host-dim); }
+.fb-input::placeholder { color: var(--text-3); }
+.fb-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+.fb-btn {
+  padding: 7px 16px;
+  border-radius: var(--radius);
+  border: none;
+  cursor: pointer;
+  font: 500 12px var(--sans);
+  letter-spacing: 0.05em;
+  transition: all var(--transition);
+}
+.fb-send {
+  background: var(--host);
+  color: var(--bg-deep);
+}
+.fb-send:hover { filter: brightness(1.1); }
+.fb-skip {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-3);
+}
+.fb-skip:hover { border-color: var(--border-2); color: var(--text-2); }
+.fb-hint {
+  font-size: 11px;
+  color: var(--text-3);
+  margin-top: var(--sp-2);
+}
+
+/* ═══════════════════════════════════════════
+   INPUT BAR
+   ═══════════════════════════════════════════ */
+.input-bar {
+  position: relative;
+  z-index: 20;
+  background: var(--bg);
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.input-inner {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: var(--sp-4) var(--sp-6);
+  display: flex;
+  gap: var(--sp-3);
+  align-items: flex-end;
+}
+.input-field {
+  flex: 1;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  transition: border-color var(--transition), box-shadow var(--transition);
+  overflow: hidden;
+}
+.input-field:focus-within {
+  border-color: var(--claude-dim);
+  box-shadow: 0 0 0 3px var(--claude-bg);
+}
+.input-field textarea {
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: var(--text);
+  font: 400 14px var(--sans);
+  padding: var(--sp-3) var(--sp-4);
+  resize: none;
+  line-height: 1.7;
+  outline: none;
+}
+.input-field textarea::placeholder { color: var(--text-3); }
+.input-controls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+.round-picker {
+  display: flex;
+  gap: 2px;
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 2px;
+  border: 1px solid var(--border);
+}
+.round-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-3);
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font: 500 11px var(--mono);
+  letter-spacing: 0.05em;
+  transition: all var(--transition);
+}
+.round-btn:hover { color: var(--text-2); }
+.round-btn.active {
+  background: var(--surface-3);
+  color: var(--text);
+}
+.btn-action {
+  border: none;
+  padding: var(--sp-3) var(--sp-5);
+  border-radius: var(--radius);
+  cursor: pointer;
+  font: 600 12px var(--sans);
+  letter-spacing: 0.1em;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.btn-action.ready {
+  background: var(--claude);
+  color: var(--bg-deep);
+}
+.btn-action.ready:hover { filter: brightness(1.1); transform: translateY(-1px); }
+.btn-action.disabled {
+  background: var(--surface-2);
+  color: var(--text-3);
+  cursor: default;
+}
+.btn-action.stop {
+  background: transparent;
+  border: 1.5px solid var(--error);
+  color: var(--error);
+}
+.btn-action.stop:hover { background: var(--error-bg); }
+.btn-action svg { width: 14px; height: 14px; }
+
+/* ── Export Button ── */
+.btn-export {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  color: var(--text-3);
+  transition: all var(--transition);
+  flex-shrink: 0;
+}
+.btn-export:hover {
+  border-color: var(--border-2);
+  color: var(--text);
+  background: var(--surface-2);
+}
+.btn-export.visible { display: flex; }
+.btn-export svg { width: 18px; height: 18px; }
+.btn-export-tooltip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--surface-3);
+  color: var(--text);
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: var(--radius);
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.btn-export:hover .btn-export-tooltip { opacity: 1; }
+
+/* ── Export Toast ── */
+.export-toast {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--surface-3);
+  border: 1px solid var(--border-2);
+  color: var(--text);
+  padding: var(--sp-3) var(--sp-5);
+  border-radius: var(--radius);
+  font-size: 13px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  z-index: 100;
+  opacity: 0;
+  transition: opacity 0.3s, transform 0.3s;
+  pointer-events: none;
+}
+.export-toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+.export-toast svg { width: 16px; height: 16px; color: var(--success); }
+
+/* ── Cursor animation ── */
+.cursor {
+  animation: blink 0.8s ease-in-out infinite;
+  font-weight: 200;
+  margin-left: 1px;
+}
+@keyframes blink { 0%, 100% { opacity: 0.8; } 50% { opacity: 0; } }
+.cursor.c { color: var(--claude); }
+.cursor.g { color: var(--gpt); }
+.cursor.m { color: var(--gem); }
+.cursor.s { color: var(--summary); }
+.cursor.h { color: var(--host); }
+
+/* ── Animations ── */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ── Reduced Motion ── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ── Mobile ── */
+@media (max-width: 600px) {
+  .header-main { padding: var(--sp-3) var(--sp-4); }
+  .brand-title { font-size: 15px; }
+  .keys-panel { padding: 0 var(--sp-4) var(--sp-3); }
+  .conv { padding: 0 var(--sp-4); }
+  .input-inner { padding: var(--sp-3) var(--sp-4); }
+  .msg { max-width: 96%; }
+  .empty-avatars { gap: var(--sp-6); }
+  .empty-av-icon { width: 44px; height: 44px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════ Header ═══════ -->
+<header>
+  <div class="header-main">
+    <div class="brand">
+      <div>
+        <div class="brand-mark">
+          <span class="brand-title">AI TRIALOGUE</span>
+          <div class="brand-dots">
+            <div class="brand-dot" id="dot-claude" style="color:var(--claude);background:var(--claude)"></div>
+            <div class="brand-dot" id="dot-chatgpt" style="color:var(--gpt);background:var(--gpt)"></div>
+            <div class="brand-dot" id="dot-gemini" style="color:var(--gem);background:var(--gem)"></div>
+          </div>
+        </div>
+        <div class="brand-sub">Claude · ChatGPT · Gemini</div>
+      </div>
+    </div>
+    <button class="btn-config open" id="btn-keys" onclick="toggleKeys()" aria-label="API設定の開閉">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.78 7.78 5.5 5.5 0 0 1 7.78-7.78m0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+      <span id="btn-keys-text">CONFIG</span>
+    </button>
+  </div>
+
+  <div class="keys-panel" id="keys-panel">
+    <div class="key-row" id="krow-claude">
+      <div class="key-avatar c">C</div>
+      <div style="flex:1">
+        <div class="key-label">ANTHROPIC API KEY</div>
+        <input class="key-input" type="password" placeholder="sk-ant-..." id="key-claude" oninput="updateDots()" aria-label="Anthropic APIキー">
+      </div>
+      <div class="key-status" id="kdot-claude"></div>
+    </div>
+    <div class="key-row" id="krow-chatgpt">
+      <div class="key-avatar g">G</div>
+      <div style="flex:1">
+        <div class="key-label">OPENAI API KEY</div>
+        <input class="key-input" type="password" placeholder="sk-..." id="key-chatgpt" oninput="updateDots()" aria-label="OpenAI APIキー">
+      </div>
+      <div class="key-status" id="kdot-chatgpt"></div>
+    </div>
+    <div class="key-row" id="krow-gemini">
+      <div class="key-avatar m">&#10022;</div>
+      <div style="flex:1">
+        <div class="key-label">GOOGLE AI API KEY</div>
+        <input class="key-input" type="password" placeholder="AIza..." id="key-gemini" oninput="updateDots()" aria-label="Google AI APIキー">
+      </div>
+      <div class="key-status" id="kdot-gemini"></div>
+    </div>
+    <div class="host-row">
+      <div class="host-avatar">Y</div>
+      <div style="flex:1">
+        <div class="key-label">あなたの名前（Host）</div>
+        <input class="host-input" type="text" placeholder="名前を入力…" id="host-name" oninput="updateHostName()" aria-label="ホスト名">
+      </div>
+    </div>
+    <div class="keys-footer">
+      <div class="keys-note" style="flex-direction:column;align-items:flex-start;gap:4px">
+        <span style="display:flex;align-items:center;gap:4px">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;flex-shrink:0"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          APIキーはブラウザのメモリ上のみ保持
+        </span>
+        <span style="color:var(--text-3);font-size:10px">※ 議論内容は各AIのAPIに送信されます。機密情報を含むテーマでの利用はご注意ください</span>
+      </div>
+      <button class="btn-test" onclick="testConnections()">接続テスト</button>
+    </div>
+    <div id="test-results"></div>
+  </div>
+</header>
+
+<!-- ═══════ Conversation ═══════ -->
+<div class="conv" id="conv">
+  <div class="conv-inner" id="conv-inner">
+    <div class="empty-state" id="empty-state">
+      <div class="empty-avatars">
+        <div class="empty-av" id="av-claude">
+          <div class="empty-av-icon c">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2a7 7 0 0 0-7 7v1a7 7 0 0 0 14 0V9a7 7 0 0 0-7-7z"/><path d="M8.5 13.5s1.5 2 3.5 2 3.5-2 3.5-2"/><circle cx="9" cy="9.5" r="0.5" fill="currentColor"/><circle cx="15" cy="9.5" r="0.5" fill="currentColor"/><path d="M12 17v3m-3 1h6"/></svg>
+          </div>
+          <div class="empty-av-name c">Claude</div>
+          <div class="empty-av-vendor">ANTHROPIC</div>
+        </div>
+        <div class="empty-av dim" id="av-chatgpt">
+          <div class="empty-av-icon g">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M8 12h8M12 8v8"/><circle cx="12" cy="12" r="3"/></svg>
+          </div>
+          <div class="empty-av-name g">ChatGPT</div>
+          <div class="empty-av-vendor">OPENAI</div>
+        </div>
+        <div class="empty-av dim" id="av-gemini">
+          <div class="empty-av-icon m">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2l3 7h7l-5.5 4.5 2 7L12 16l-6.5 4.5 2-7L2 9h7z"/></svg>
+          </div>
+          <div class="empty-av-name m">Gemini</div>
+          <div class="empty-av-vendor">GOOGLE</div>
+        </div>
+      </div>
+      <div class="empty-msg" id="empty-msg">APIキーを入力してください</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ Input Bar ═══════ -->
+<div class="input-bar">
+  <div class="input-inner">
+    <button class="btn-export" id="btn-export" onclick="exportMinutes()" aria-label="議事録をエクスポート" style="position:relative">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      <span class="btn-export-tooltip">議事録エクスポート</span>
+    </button>
+    <div class="input-field">
+      <textarea id="topic-input" rows="2" placeholder="会談テーマを入力…" onkeydown="handleKey(event)" aria-label="会談テーマ入力"></textarea>
+    </div>
+    <div class="input-controls">
+      <div class="round-picker" role="radiogroup" aria-label="ラウンド数選択">
+        <button class="round-btn active" data-r="3" onclick="setRounds(3)" role="radio" aria-checked="true">3R</button>
+        <button class="round-btn" data-r="4" onclick="setRounds(4)" role="radio" aria-checked="false">4R</button>
+        <button class="round-btn" data-r="5" onclick="setRounds(5)" role="radio" aria-checked="false">5R</button>
+        <button class="round-btn" data-r="0" onclick="setRounds(0)" role="radio" aria-checked="false">&infin;</button>
+      </div>
+      <button class="btn-action disabled" id="btn-action" onclick="startOrStop()" aria-label="会談開始">
+        <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
+        START
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Export Toast -->
+<div class="export-toast" id="export-toast">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+  議事録をダウンロードしました
+</div>
+
+<script>
+// ═══════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════
+let rounds = 3;
+let running = false;
+let aborted = false;
+let allMessages = [];
+
+const providers = {
+  claude:  { name:'Claude',  vendor:'Anthropic', cls:'c', avatar:'C' },
+  chatgpt: { name:'ChatGPT', vendor:'OpenAI',    cls:'g', avatar:'G' },
+  gemini:  { name:'Gemini',  vendor:'Google',     cls:'m', avatar:'\u2726' },
+  host:    { name:'You', vendor:'Host',      cls:'h', avatar:'Y' },
+};
+const order = ['claude','chatgpt','gemini'];
+
+// ═══════════════════════════════════════════
+// KEYS & UI
+// ═══════════════════════════════════════════
+function getKey(id) { return document.getElementById('key-'+id).value.trim(); }
+function allKeysSet() { return getKey('claude') && getKey('chatgpt') && getKey('gemini'); }
+
+function getHostName() {
+  var v = document.getElementById('host-name').value.trim();
+  return v || 'You';
+}
+
+function getHostDisplayName() {
+  var name = getHostName();
+  return name === 'You' ? 'You' : name + 'さん';
+}
+
+function updateHostName() {
+  var name = getHostName();
+  var initial = name === 'You' ? 'Y' : name.charAt(0).toUpperCase();
+  providers.host.name = getHostDisplayName();
+  providers.host.avatar = initial;
+  // アバターUIも更新
+  var avatarEl = document.querySelector('.host-avatar');
+  if (avatarEl) avatarEl.textContent = initial;
+}
+
+function updateDots() {
+  for (const id of order) {
+    const has = !!getKey(id);
+    const dot = document.getElementById('dot-'+id);
+    dot.className = 'brand-dot' + (has ? ' active' : '');
+
+    const kdot = document.getElementById('kdot-'+id);
+    const color = id === 'claude' ? 'var(--claude)' : id === 'chatgpt' ? 'var(--gpt)' : 'var(--gem)';
+    kdot.style.background = has ? color : 'transparent';
+    kdot.className = 'key-status' + (has ? ' connected' : '');
+    kdot.style.color = color;
+
+    const krow = document.getElementById('krow-'+id);
+    krow.className = 'key-row' + (has ? ' connected' : '');
+
+    const av = document.getElementById('av-'+id);
+    if (av) av.className = 'empty-av' + (has ? '' : ' dim');
+  }
+  const em = document.getElementById('empty-msg');
+  if (em) em.textContent = allKeysSet() ? 'テーマを入力して START' : 'APIキーを入力してください';
+  updateActionBtn();
+}
+
+function toggleKeys() {
+  const panel = document.getElementById('keys-panel');
+  const btn = document.getElementById('btn-keys');
+  const text = document.getElementById('btn-keys-text');
+  if (panel.style.display === 'none') {
+    panel.style.display = 'block';
+    btn.className = 'btn-config open';
+    text.textContent = 'CONFIG';
+  } else {
+    panel.style.display = 'none';
+    btn.className = 'btn-config';
+    text.textContent = 'CONFIG';
+  }
+}
+
+function setRounds(r) {
+  rounds = r;
+  document.querySelectorAll('.round-btn').forEach(function(b) {
+    var val = parseInt(b.dataset.r);
+    b.className = 'round-btn' + (val === r ? ' active' : '');
+    b.setAttribute('aria-checked', val === r ? 'true' : 'false');
+  });
+}
+
+function updateActionBtn() {
+  const btn = document.getElementById('btn-action');
+  const topic = document.getElementById('topic-input').value.trim();
+  if (running) {
+    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="1"/></svg> STOP';
+    btn.className = 'btn-action stop';
+  } else if (topic && allKeysSet()) {
+    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg> START';
+    btn.className = 'btn-action ready';
+  } else {
+    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg> START';
+    btn.className = 'btn-action disabled';
+  }
+}
+
+document.getElementById('topic-input').addEventListener('input', updateActionBtn);
+
+var isComposing = false;
+var topicEl = document.getElementById('topic-input');
+topicEl.addEventListener('compositionstart', function() { isComposing = true; });
+topicEl.addEventListener('compositionend', function() { isComposing = false; });
+
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey && !isComposing && !e.isComposing) {
+    e.preventDefault();
+    startOrStop();
+  }
+}
+
+function startOrStop() {
+  if (running) { aborted = true; return; }
+  const topic = document.getElementById('topic-input').value.trim();
+  if (!topic || !allKeysSet()) return;
+  runConversation(topic);
+}
+
+// ═══════════════════════════════════════════
+// API CALLS
+// ═══════════════════════════════════════════
+async function safeFetch(label, url, opts, retries) {
+  if (retries === undefined) retries = 2;
+  var lastErr;
+  for (var attempt = 0; attempt <= retries; attempt++) {
+    if (attempt > 0) {
+      await new Promise(function(r) { setTimeout(r, 1000 * attempt); });
+    }
+    try {
+      var resp = await fetch(url, opts);
+      var raw = await resp.text();
+      var data;
+      try { data = JSON.parse(raw); }
+      catch (e) { throw new Error(label + ': JSONパース失敗 — ' + raw.substring(0, 300)); }
+      if (!resp.ok) {
+        var msg = (data.error && (data.error.message || data.error.type)) || raw.substring(0, 300);
+        var errDetail = label + ' (' + resp.status + '): ' + msg;
+        if (resp.status === 429 && attempt < retries) {
+          lastErr = new Error(errDetail + ' [リトライ中 ' + (attempt+1) + '/' + retries + ']');
+          continue;
+        }
+        throw new Error(errDetail);
+      }
+      return data;
+    } catch (e) {
+      lastErr = e;
+      if (e.message && e.message.indexOf(label) === 0) {
+        if (attempt >= retries) throw e;
+        continue;
+      }
+      if (attempt >= retries) {
+        throw new Error(label + ': 通信失敗 — ' + e.message + ' (' + (retries+1) + '回試行後)');
+      }
+    }
+  }
+  throw lastErr;
+}
+
+async function callClaude(system, userContent) {
+  const d = await safeFetch('Claude', 'https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': getKey('claude'),
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true',
+    },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 4096,
+      system: system,
+      messages: [{ role: 'user', content: userContent }],
+    }),
+  });
+  for (const b of (d.content||[])) { if (b.type==='text' && b.text) return b.text; }
+  throw new Error('Claude: 空のレスポンス — ' + JSON.stringify(d).substring(0, 300));
+}
+
+async function callChatGPT(system, userContent) {
+  const d = await safeFetch('ChatGPT', 'https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + getKey('chatgpt'),
+    },
+    body: JSON.stringify({
+      model: 'gpt-4o',
+      max_tokens: 1000,
+      messages: [
+        { role: 'system', content: system },
+        { role: 'user', content: userContent },
+      ],
+    }),
+  });
+  var t = d.choices && d.choices[0] && d.choices[0].message && d.choices[0].message.content;
+  if (!t) throw new Error('ChatGPT: 空のレスポンス — ' + JSON.stringify(d).substring(0, 300));
+  return t;
+}
+
+async function callGemini(system, userContent) {
+  const d = await safeFetch('Gemini',
+    'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' + getKey('gemini'),
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        system_instruction: { parts: [{ text: system }] },
+        contents: [{ role: 'user', parts: [{ text: userContent }] }],
+        generationConfig: { maxOutputTokens: 4096 },
+      }),
+    }
+  );
+  var t = d.candidates && d.candidates[0] && d.candidates[0].content &&
+    d.candidates[0].content.parts && d.candidates[0].content.parts[0] && d.candidates[0].content.parts[0].text;
+  if (!t) throw new Error('Gemini: 空のレスポンス — ' + JSON.stringify(d).substring(0, 300));
+  return t;
+}
+
+async function callProvider(pid, system, userContent) {
+  if (pid === 'claude') return callClaude(system, userContent);
+  if (pid === 'chatgpt') return callChatGPT(system, userContent);
+  return callGemini(system, userContent);
+}
+
+// ═══════════════════════════════════════════
+// DOM HELPERS
+// ═══════════════════════════════════════════
+const convInner = document.getElementById('conv-inner');
+const convEl = document.getElementById('conv');
+
+function scrollBottom() {
+  convEl.scrollTo({ top: convEl.scrollHeight, behavior: 'smooth' });
+}
+
+function clearConversation() {
+  convInner.innerHTML = '';
+  allMessages = [];
+  updateExportBtn();
+}
+
+function addRoundDivider(round, total) {
+  const html = '<div class="round-div">' +
+    '<div class="round-div-line"></div>' +
+    '<div class="round-div-badge">' +
+      '<span class="round-div-label">ROUND ' + round + ' / ' + total + '</span>' +
+      '<div class="round-div-dots">' +
+        '<div class="round-div-dot" style="background:var(--claude)"></div>' +
+        '<div class="round-div-dot" style="background:var(--gpt)"></div>' +
+        '<div class="round-div-dot" style="background:var(--gem)"></div>' +
+      '</div>' +
+    '</div>' +
+    '<div class="round-div-line"></div>' +
+  '</div>';
+  convInner.insertAdjacentHTML('beforeend', html);
+}
+
+var posMap = ['pos-left', 'pos-right', 'pos-center'];
+
+function addMessage(pid, text, posIdx) {
+  return new Promise(function(resolve) {
+    var p = providers[pid] || { name:'SUMMARY', vendor:'Facilitator', cls:'s', avatar:'\u25C7' };
+    var pos = posMap[posIdx % 3];
+    var wrapper = document.createElement('div');
+    wrapper.innerHTML = '<div class="msg ' + pos + '">' +
+      '<div class="msg-avatar ' + p.cls + '">' + p.avatar + '</div>' +
+      '<div class="msg-content">' +
+        '<div class="msg-header">' +
+          '<span class="msg-name ' + p.cls + '">' + p.name + '</span>' +
+          '<span class="msg-vendor">' + p.vendor + '</span>' +
+        '</div>' +
+        '<div class="msg-body ' + p.cls + '"><span class="tw-target"></span><span class="cursor ' + p.cls + '">\u2502</span></div>' +
+      '</div>' +
+    '</div>';
+    var msgEl = wrapper.firstChild;
+    convInner.appendChild(msgEl);
+    scrollBottom();
+
+    var target = msgEl.querySelector('.tw-target');
+    var cursor = msgEl.querySelector('.cursor');
+    var escaped = escapeHtml(text);
+    var i = 0;
+    var speed = Math.max(5, Math.min(18, Math.floor(800 / text.length)));
+
+    function type() {
+      if (i < escaped.length) {
+        if (escaped[i] === '&') {
+          var end = escaped.indexOf(';', i);
+          if (end !== -1) {
+            target.innerHTML += escaped.substring(i, end + 1);
+            i = end + 1;
+          } else {
+            target.innerHTML += escaped[i];
+            i++;
+          }
+        } else {
+          target.innerHTML += escaped[i];
+          i++;
+        }
+        if (i % 3 === 0) scrollBottom();
+        requestAnimationFrame(function() { setTimeout(type, speed); });
+      } else {
+        if (cursor) cursor.remove();
+        scrollBottom();
+        resolve();
+      }
+    }
+    type();
+  });
+}
+
+function addError(pid, errMsg) {
+  const p = providers[pid] || { name: pid };
+  convInner.insertAdjacentHTML('beforeend',
+    '<div class="err-msg">' + p.name + ': ' + escapeHtml(errMsg) + '</div>'
+  );
+  scrollBottom();
+}
+
+function addSynthDivider() {
+  convInner.insertAdjacentHTML('beforeend',
+    '<div class="synth-div">' +
+      '<div class="synth-line"></div>' +
+      '<div class="synth-badge">' +
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"/></svg>' +
+        'SYNTHESIS' +
+      '</div>' +
+      '<div class="synth-line"></div>' +
+    '</div>'
+  );
+}
+
+// ═══════════════════════════════════════════
+// FEEDBACK PROMPT
+// ═══════════════════════════════════════════
+function waitForFeedback(roundNum) {
+  return new Promise(function(resolve) {
+    var fbDiv = document.createElement('div');
+    fbDiv.className = 'fb-prompt';
+    fbDiv.innerHTML =
+      '<div class="fb-header">' +
+        '<div class="fb-icon">' + providers.host.avatar + '</div>' +
+        '<div class="fb-title">Round ' + roundNum + ' フィードバック — ' + getHostDisplayName() + '</div>' +
+      '</div>' +
+      '<div class="fb-body">' +
+        '<textarea class="fb-input" rows="2" placeholder="議論への指示・方向性・補足情報を入力…" aria-label="フィードバック入力"></textarea>' +
+        '<div class="fb-actions">' +
+          '<button class="fb-btn fb-send">送信</button>' +
+          '<button class="fb-btn fb-skip">Skip</button>' +
+        '</div>' +
+      '</div>' +
+      '<div class="fb-hint">Skipで指示なし続行 / 送信で次ラウンドに反映</div>';
+    convInner.appendChild(fbDiv);
+    scrollBottom();
+
+    var textarea = fbDiv.querySelector('.fb-input');
+    var btnSend = fbDiv.querySelector('.fb-send');
+    var btnSkip = fbDiv.querySelector('.fb-skip');
+
+    var fbComposing = false;
+    textarea.addEventListener('compositionstart', function() { fbComposing = true; });
+    textarea.addEventListener('compositionend', function() { fbComposing = false; });
+    textarea.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' && !e.shiftKey && !fbComposing && !e.isComposing) {
+        e.preventDefault();
+        submit();
+      }
+    });
+    textarea.focus();
+
+    function submit() {
+      var val = textarea.value.trim();
+      textarea.disabled = true;
+      btnSend.disabled = true;
+      btnSkip.disabled = true;
+      fbDiv.style.opacity = '0.4';
+      resolve(val || null);
+    }
+
+    btnSend.addEventListener('click', submit);
+    btnSkip.addEventListener('click', function() {
+      textarea.disabled = true;
+      btnSend.disabled = true;
+      btnSkip.disabled = true;
+      fbDiv.style.opacity = '0.4';
+      resolve(null);
+    });
+  });
+}
+
+let thinkingEl = null;
+function showThinking(pid) {
+  const p = providers[pid] || { name:'総括', cls:'s' };
+  const html = '<div class="thinking" id="thinking-el">' +
+    '<div class="think-bubble ' + p.cls + '">' +
+      '<div class="think-dot ' + p.cls + '"></div>' +
+      '<div class="think-dot ' + p.cls + '"></div>' +
+      '<div class="think-dot ' + p.cls + '"></div>' +
+    '</div>' +
+    '<span class="think-label ' + p.cls + '">' + p.name + ' is thinking\u2026</span>' +
+  '</div>';
+  convInner.insertAdjacentHTML('beforeend', html);
+  thinkingEl = document.getElementById('thinking-el');
+  scrollBottom();
+}
+function hideThinking() {
+  if (thinkingEl) { thinkingEl.remove(); thinkingEl = null; }
+}
+
+function escapeHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ═══════════════════════════════════════════
+// MAIN LOGIC
+// ═══════════════════════════════════════════
+function buildTranscript() {
+  return allMessages.map(function(m) { return '\u3010' + m.name + '\u3011\n' + m.text; }).join('\n\n');
+}
+
+function buildUserContext() {
+  var name = getHostDisplayName();
+  return 'この会談の主催者は「' + name + '」です。AI技術やセキュリティ、ビジネス戦略に関心を持つプロフェッショナルです。議論は' + name + 'の実務・戦略に直接役立つ深さと具体性を持たせ、抽象論に終始しないこと。';
+}
+
+function sysPrompt(aiName) {
+  var others = order.filter(function(id) { return providers[id].name !== aiName; }).map(function(id) { return providers[id].name; }).join('\u30FB');
+  var hostName = getHostDisplayName();
+
+  return 'あなたは' + aiName + 'として、' + others + 'との三者AI会談に参加しています。\n' +
+    '会談の主催者は「' + hostName + '」です。\n\n' +
+    '--- 会談の背景 ---\n' + buildUserContext() + '\n\n' +
+    '--- ルール ---\n' +
+    '自然な日本語で議論してください。\n' +
+    '1回の発言は250〜400文字程度。前の発言者がいる場合はその内容に触れてから自分の見解を述べてください。\n' +
+    '単なる同意や要約は避け、独自の視点や異なる角度からの考察を加えてください。';
+}
+
+async function runConversation(topic) {
+  running = true;
+  aborted = false;
+  currentTopic = topic;
+  updateActionBtn();
+  updateExportBtn();
+  clearConversation();
+  document.getElementById('keys-panel').style.display = 'none';
+  document.getElementById('btn-keys').className = 'btn-config';
+
+  let msgIdx = 0;
+  let r = 0;
+  var isInfinite = (rounds === 0);
+  var maxRounds = isInfinite ? 999 : rounds;
+
+  for (r = 1; r <= maxRounds; r++) {
+    if (aborted) break;
+    addRoundDivider(r, isInfinite ? '\u221E' : rounds);
+
+    for (const pid of order) {
+      if (aborted) break;
+      const p = providers[pid];
+      showThinking(pid);
+
+      try {
+        const transcript = buildTranscript();
+        const userMsg = transcript.length === 0
+          ? '以下のテーマについて議論を始めてください。\n\nテーマ：「' + topic + '」'
+          : 'テーマ：「' + topic + '」\n\n--- これまでの議論 ---\n' + transcript + '\n\n--- Round ' + r + ' ---\nあなたの番です。これまでの議論を踏まえて発言してください。';
+
+        const text = await callProvider(pid, sysPrompt(p.name), userMsg);
+        hideThinking();
+        await addMessage(pid, text, msgIdx);
+        allMessages.push({ pid: pid, name: p.name, text: text });
+        updateExportBtn();
+        msgIdx++;
+      } catch (err) {
+        hideThinking();
+        addError(pid, err.message);
+      }
+
+      await new Promise(function(res) { setTimeout(res, 800); });
+    }
+
+    if (aborted) break;
+
+    if (r < maxRounds || isInfinite) {
+      var feedback = await waitForFeedback(r);
+
+      if (aborted) break;
+
+      if (feedback) {
+        await addMessage('host', feedback, msgIdx);
+        allMessages.push({ pid: 'host', name: getHostDisplayName() + '（Host）', text: feedback });
+        updateExportBtn();
+        msgIdx++;
+        await new Promise(function(res) { setTimeout(res, 400); });
+      }
+    }
+  }
+
+  // Summary
+  if (allMessages.length > 0) {
+    addSynthDivider();
+    showThinking('summary');
+    try {
+      var totalRounds = r - 1;
+      var hostName = getHostDisplayName();
+      var summaryInstruction = 'あなたは三者AI会談（Claude \u00D7 ChatGPT \u00D7 Gemini）のファシリテーター兼アナリストです。' +
+        (aborted ? '議論はRound ' + totalRounds + 'でSTOPにより途中終了しました。' : '') +
+        '\n\n以下の構造でリッチな総括レポートを日本語で作成してください。\n\n' +
+        '【議論の全体像】\nテーマに対して議論がどのように展開・深化したかを2〜3文で俯瞰する。\n\n' +
+        '【各AIの核心的主張と特徴】\n' +
+        '- Claude: 何を軸に論じたか、どんな切り口が特徴的だったか\n' +
+        '- ChatGPT: 何を軸に論じたか、どんな切り口が特徴的だったか\n' +
+        '- Gemini: 何を軸に論じたか、どんな切り口が特徴的だったか\n\n' +
+        '【対立点・緊張関係】\n3者の意見が分かれた論点、建設的な対立があった箇所を具体的に指摘する。\n\n' +
+        '【収束点・合意形成】\n3者が（暗黙的にでも）合意に至った点があれば指摘する。\n\n' +
+        '【' + hostName + 'への示唆】\nこの議論から得られるアクショナブルな洞察を2〜3点提示する。\n\n' +
+        '【残された問い】\n議論で十分に掘り下げられなかった論点、次回の会談で深めるべきテーマを提示する。\n\n' +
+        '全体で600〜1000文字程度。箇条書きと散文を適切に組み合わせ、読みやすく構造化すること。';
+      var summaryText = await callClaude(
+        summaryInstruction,
+        'テーマ：「' + topic + '」\n\n--- 主催者プロフィール ---\n' + buildUserContext() + '\n\n--- 議論全文 ---\n' + buildTranscript()
+      );
+      hideThinking();
+      await addMessage('summary', summaryText, msgIdx);
+    } catch (err) {
+      hideThinking();
+      addError('summary', err.message);
+    }
+  }
+
+  running = false;
+  updateActionBtn();
+  updateExportBtn();
+}
+
+// ═══════════════════════════════════════════
+// EXPORT MINUTES
+// ═══════════════════════════════════════════
+var currentTopic = '';
+
+function updateExportBtn() {
+  var btn = document.getElementById('btn-export');
+  btn.className = 'btn-export' + (allMessages.length > 0 ? ' visible' : '');
+}
+
+function exportMinutes() {
+  if (allMessages.length === 0) return;
+
+  var now = new Date();
+  var dateStr = now.getFullYear() + '-' +
+    String(now.getMonth()+1).padStart(2,'0') + '-' +
+    String(now.getDate()).padStart(2,'0');
+  var timeStr = String(now.getHours()).padStart(2,'0') + ':' +
+    String(now.getMinutes()).padStart(2,'0');
+  var fileDate = dateStr + '_' + timeStr.replace(':','');
+
+  var topic = currentTopic || '（テーマ未設定）';
+
+  // Markdownを構築
+  var md = '';
+  md += '# AI TRIALOGUE 議事録\n\n';
+  md += '| 項目 | 内容 |\n';
+  md += '|---|---|\n';
+  md += '| テーマ | ' + topic + ' |\n';
+  var hostName = getHostDisplayName();
+  md += '| 主催者 | ' + hostName + ' |\n';
+  md += '| 日時 | ' + dateStr + ' ' + timeStr + ' |\n';
+  md += '| 参加AI | Claude (Anthropic) / ChatGPT (OpenAI) / Gemini (Google) |\n';
+  md += '| 総発言数 | ' + allMessages.length + ' |\n\n';
+  md += '---\n\n';
+
+  // ラウンドごとにグループ化
+  var roundNum = 0;
+  var inSummary = false;
+
+  for (var i = 0; i < allMessages.length; i++) {
+    var m = allMessages[i];
+
+    // ラウンド推定：AI 3者が一巡するたびにラウンドが進む
+    // host/summaryは独立
+    if (m.pid !== 'host' && m.pid !== 'summary') {
+      // 各ラウンドの最初のAI発言（claude）を検出
+      if (m.pid === 'claude' && !inSummary) {
+        roundNum++;
+        md += '## Round ' + roundNum + '\n\n';
+      }
+    }
+
+    if (m.pid === 'summary') {
+      if (!inSummary) {
+        md += '---\n\n## 総括\n\n';
+        inSummary = true;
+      }
+      md += m.text + '\n\n';
+      continue;
+    }
+
+    if (m.pid === 'host') {
+      md += '### ' + hostName + '（Host）フィードバック\n\n';
+      md += '> ' + m.text.split('\n').join('\n> ') + '\n\n';
+      continue;
+    }
+
+    // AI発言
+    var label = m.name;
+    md += '### ' + label + '\n\n';
+    md += m.text + '\n\n';
+  }
+
+  md += '---\n\n';
+  md += '*この議事録は [AI TRIALOGUE](https://github.com/) により自動生成されました。*\n';
+
+  // ダウンロード
+  var blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = 'trialogue_' + fileDate + '.md';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+
+  // トースト表示
+  showToast();
+}
+
+function showToast() {
+  var toast = document.getElementById('export-toast');
+  toast.className = 'export-toast show';
+  setTimeout(function() {
+    toast.className = 'export-toast';
+  }, 2500);
+}
+
+// ═══════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════
+updateDots();
+
+// ═══════════════════════════════════════════
+// CONNECTION TEST
+// ═══════════════════════════════════════════
+async function testConnections() {
+  var results = document.getElementById('test-results');
+  results.innerHTML = '<div style="color:var(--text-3)">テスト中...</div>';
+  var html = '';
+
+  try {
+    var r1 = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': getKey('claude') || 'test',
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true',
+      },
+      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 5, messages: [{ role: 'user', content: 'hi' }] }),
+    });
+    var d1 = await r1.json();
+    if (r1.ok) {
+      html += '<div style="color:var(--claude)">\u2713 Claude: 接続OK (' + r1.status + ')</div>';
+    } else {
+      html += '<div style="color:var(--claude)">\u26A0 Claude: ' + r1.status + ' \u2014 ' + (d1.error ? d1.error.message : JSON.stringify(d1).substring(0,150)) + '</div>';
+    }
+  } catch(e) {
+    html += '<div style="color:var(--error)">\u2717 Claude: ' + e.message + '</div>';
+  }
+
+  try {
+    var r2 = await fetch('https://api.openai.com/v1/models', {
+      headers: { 'Authorization': 'Bearer ' + (getKey('chatgpt') || 'test') },
+    });
+    if (r2.ok) {
+      html += '<div style="color:var(--gpt)">\u2713 ChatGPT: 接続OK (' + r2.status + ')</div>';
+    } else {
+      var d2 = await r2.json().catch(function(){ return {}; });
+      html += '<div style="color:var(--gpt)">\u26A0 ChatGPT: ' + r2.status + ' \u2014 ' + (d2.error ? d2.error.message : 'unknown') + '</div>';
+    }
+  } catch(e) {
+    html += '<div style="color:var(--error)">\u2717 ChatGPT: ' + e.message + '</div>';
+  }
+
+  try {
+    var r3 = await fetch('https://generativelanguage.googleapis.com/v1beta/models?key=' + (getKey('gemini') || 'test'));
+    if (r3.ok) {
+      html += '<div style="color:var(--gem)">\u2713 Gemini: 接続OK (' + r3.status + ')</div>';
+    } else {
+      var d3 = await r3.json().catch(function(){ return {}; });
+      html += '<div style="color:var(--gem)">\u26A0 Gemini: ' + r3.status + ' \u2014 ' + (d3.error ? d3.error.message : 'unknown') + '</div>';
+    }
+  } catch(e) {
+    html += '<div style="color:var(--error)">\u2717 Gemini: ' + e.message + '</div>';
+  }
+
+  html += '<div style="color:var(--text-3);margin-top:4px">' + location.protocol + '//' + location.host + '</div>';
+  results.innerHTML = html;
+}
+</script>
+</body>
+</html>
